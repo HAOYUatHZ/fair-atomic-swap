@@ -2,13 +2,12 @@
 
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08emT\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 
+\usepackage{datetime2}
 \usepackage{multirow}
 \usepackage{amsmath}
 
 \usepackage[style=ACM-Reference-Format,backend=bibtex,sorting=none]{biblatex}
 \addbibresource{./refs.bib}
-
-\usepackage{multirow}
 
 \usepackage{caption}
 \usepackage{subcaption}
@@ -20,8 +19,10 @@
 
 
 \begin{document}
-
-\title{Cross-Chain Payment (TODO)}
+\title{
+    Cross-Chain Payment (TODO)\\
+    {\normalsize \normalfont version: update at \DTMnow}
+}
 
 \begin{abstract}
 TODO
@@ -29,7 +30,7 @@ TODO
 
 \keywords{TODO}
 
-\maketitle
+\maketitle 
 
 \input{sections/1introduction.tex}
 \input{sections/2background.tex}

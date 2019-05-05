@@ -13,19 +13,21 @@ pragma solidity ^0.5.0;
 //    given that our timestamp can tolerate a 30-second drift in time;
 
 contract RiskySpeculativeAtomicSwapSpot {
+    enum Kind { Initiator, Participant }
     enum AssetState { Empty, Filled, Redeemed, Refunded }
     enum PremiumState { Empty, Filled, Redeemed, Refunded }
 
     struct Swap {
-        uint256 assetRefundTimestamp;
-        uint256 premiumRefundTimestamp;
         bytes32 secretHash;
         bytes32 secret;
         address payable initiator;
         address payable participant;
+        // Kind kind;
         uint256 assetValue;
+        uint256 assetRefundTimestamp;
         AssetState assetState;
         uint256 premiumValue;
+        uint256 premiumRefundTimestamp;
         PremiumState premiumState;
     }
 
@@ -62,46 +64,46 @@ contract RiskySpeculativeAtomicSwapSpot {
 
     event Participated(
         uint256 participateTimestamp,
-        uint256 assetRefundTimestamp,
-        uint256 premiumRefundTimestamp,
         bytes32 secretHash,
         address initiator,
         address participant,
         uint256 assetValue,
-        uint256 premiumValue
+        uint256 assetRefundTimestamp,
+        uint256 premiumValue,
+        uint256 premiumRefundTimestamp
     );
 
     event Initiated(
         uint256 initiateTimestamp,
-        uint256 assetRefundTimestamp,
-        uint256 premiumRefundTimestamp,
         bytes32 secretHash,
         address initiator,
         address participant,
         uint256 assetValue,
-        uint256 premiumValue
+        uint256 assetRefundTimestamp,
+        uint256 premiumValue,
+        uint256 premiumRefundTimestamp
     );
 
     event PremiumFilled(
         uint256 fillPremiumTimestamp,
-        uint256 assetRefundTimestamp,
-        uint256 premiumRefundTimestamp,
         bytes32 secretHash,
         address initiator,
         address participant,
         uint256 assetValue,
-        uint256 premiumValue
+        uint256 assetRefundTimestamp,
+        uint256 premiumValue,
+        uint256 premiumRefundTimestamp
     );
 
     // TODO:
     event SetUp(
-        uint256 assetRefundTimestamp,
-        uint256 premiumRefundTimestamp,
         bytes32 secretHash,
         address initiator,
         address participant,
         uint256 assetValue,
-        uint256 premiumValue
+        uint256 assetRefundTimestamp,
+        uint256 premiumValue,
+        uint256 premiumRefundTimestamp
     );
 
     constructor() public {}
@@ -181,13 +183,14 @@ contract RiskySpeculativeAtomicSwapSpot {
         _;
     }
 
-    function setup(uint256 assetRefundTime,
-                    uint256 premiumRefundTime,
-                    bytes32 secretHash,
+    function setup(bytes32 secretHash,
                     address payable initiator,
                     address payable participant,
                     uint256 assetValue,
-                    uint256 premiumValue)
+                    uint256 assetRefundTime,
+                    uint256 premiumValue,
+                    uint256 premiumRefundTime
+                    )
         public
         payable
         checkRefundTimestampOverflow(assetRefundTime)
@@ -195,24 +198,29 @@ contract RiskySpeculativeAtomicSwapSpot {
         isAssetEmptyState(secretHash)
         isPremiumEmptyState(secretHash)
     {
-        swaps[secretHash].assetRefundTimestamp = block.timestamp + assetRefundTime;
-        swaps[secretHash].premiumRefundTimestamp = block.timestamp + premiumRefundTime;
         swaps[secretHash].secretHash = secretHash;
         swaps[secretHash].initiator = initiator;
         swaps[secretHash].participant = participant;
+        // if (premiumValue == 0) {
+        //     swaps[secretHash].kind = Kind.Initiator;
+        // } else {
+        //     swaps[secretHash].kind = Kind.Participant;
+        // }
         swaps[secretHash].assetValue = assetValue;
-        swaps[secretHash].premiumValue = premiumValue;
+        swaps[secretHash].assetRefundTimestamp = block.timestamp + assetRefundTime;
         swaps[secretHash].assetState = AssetState.Empty;
+        swaps[secretHash].premiumValue = premiumValue;
+        swaps[secretHash].premiumRefundTimestamp = block.timestamp + premiumRefundTime;
         swaps[secretHash].premiumState = PremiumState.Empty;
         
         emit SetUp(
-            block.timestamp + assetRefundTime,
-            block.timestamp + premiumRefundTime,
             secretHash,
             initiator,
             participant,
             assetValue,
-            premiumValue 
+            block.timestamp + assetRefundTime,
+            premiumValue, 
+            block.timestamp + premiumRefundTime
         );
     }
 
@@ -228,13 +236,13 @@ contract RiskySpeculativeAtomicSwapSpot {
         
         emit PremiumFilled(
             block.timestamp,
-            swaps[secretHash].assetRefundTimestamp,
-            swaps[secretHash].premiumRefundTimestamp,
             secretHash,
             msg.sender,
             swaps[secretHash].participant,
             swaps[secretHash].assetValue,
-            msg.value
+            swaps[secretHash].assetRefundTimestamp,
+            msg.value,
+            swaps[secretHash].premiumRefundTimestamp
         );
     }
 
@@ -249,13 +257,13 @@ contract RiskySpeculativeAtomicSwapSpot {
         
         emit Initiated(
             block.timestamp,
-            swaps[secretHash].assetRefundTimestamp,
-            swaps[secretHash].premiumRefundTimestamp,
             secretHash,
             msg.sender,
             swaps[secretHash].participant,
             msg.value,
-            swaps[secretHash].premiumValue
+            swaps[secretHash].assetRefundTimestamp,
+            swaps[secretHash].premiumValue,
+            swaps[secretHash].premiumRefundTimestamp
         );
     }
 
@@ -272,13 +280,13 @@ contract RiskySpeculativeAtomicSwapSpot {
         
         emit Participated(
             block.timestamp,
-            swaps[secretHash].assetRefundTimestamp,
-            swaps[secretHash].premiumRefundTimestamp,
             secretHash,
             swaps[secretHash].initiator,
             msg.sender,
             msg.value,
-            swaps[secretHash].premiumValue
+            swaps[secretHash].assetRefundTimestamp,
+            swaps[secretHash].premiumValue,
+            swaps[secretHash].premiumRefundTimestamp
         );
     }
 

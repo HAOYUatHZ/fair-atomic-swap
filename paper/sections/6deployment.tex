@@ -1,15 +1,101 @@
 \section{Deployment}
 \label{sec:deployment}
 
-\subsection{Atomic Swaps for Currency Exchange}
+\subsection{Smart Contracts}
 
-% can implement the currency exchange by ifelse
-% smart contracts can, script cannot
-% reason: redeem can be signalled by the pre-image release
-%   refund cannot be signalled or verified
+% can implement currency exchange and american call options
+
+% state of asset and premium
+\begin{figure}
+    \begin{lstlisting}[language=Solidity, basicstyle=\tiny]
+    enum AssetState { Empty, Filled, Redeemed, Refunded }
+    enum PremiumState { Empty, Filled, Redeemed, Refunded }
+    \end{lstlisting}
+    \label{code:state}
+    \caption{Maintaining the state of the asset and the premium.}
+\end{figure}
+
+For currency exchange
+
+\begin{figure}
+    \begin{lstlisting}[language=Solidity, basicstyle=\tiny]
+    // Premium is refundable when
+    // 1. Alice initiates but Bob does not participate
+    //   after premium's timelock expires
+    // 2. asset2 is redeemed by Alice
+    modifier isPremiumRefundable(bytes32 secretHash) {
+        // the premium should be deposited
+        require(swaps[secretHash].premiumState == PremiumState.Filled);
+        // the initiator invokes this method to refund the premium
+        require(swaps[secretHash].initiator == msg.sender);
+        // if the asset2 timelock is still valid
+        if block.timestamp <= swaps[secretHash].assetRefundTimestamp {
+            // the asset2 should be redeemded by Alice
+            require(swaps[secretHash].assetState == AssetState.Redeemed)
+        } else { // if the asset2 timelock is still valid
+            // the asset2 should not be refunded
+            require(swaps[secretHash].assetState != AssetState.Refunded)
+            // the premium timelock should be expired
+            require(block.timestamp > swaps[secretHash].premiumRefundTimestanp);
+        }
+        _;
+    }
+    // Premium is redeemable for Bob when asset2 is refunded
+    // which means Alice holds the secret maliciously
+    modifier isPremiumRedeemable(bytes32 secretHash) {
+        // the premium should be deposited
+        require(swaps[secretHash].premiumState == PremiumState.Filled);
+        // the participant invokes this method to redeem the premium
+        require(swaps[secretHash].participant == msg.sender);
+        // the asset2 should be refunded
+        // this also indicates the asset2 timelock is expired
+        require(swaps[secretHash].assetState == AssetState.Refunded);
+        // the premium timelock should not be expired
+        require(block.timestamp <= swaps[secretHash].premiumRefundTimestamp);
+        _;
+    }
+    \end{lstlisting}
+    \label{code:premium_condition_currency}
+    \caption{The condition to redeem and refund the premium for currency-exchange-style Atomic Swaps.}
+\end{figure}
 
 
-\subsection{Atomic Swaps for American Call Options}
+For American Call Options
 
-% can implement the American Call Options by hashlock or by ifelse
-% script and smart contracts
+\begin{figure}
+    \begin{lstlisting}[language=Solidity, basicstyle=\tiny]
+    // Premium is refundable for Alice only when Alice initiates
+    // but Bob does not participate after premium's timelock expires
+    modifier isPremiumRefundable(bytes32 secretHash) {
+        // the premium should be deposited
+        require(swaps[secretHash].premiumState == PremiumState.Filled);
+        // the initiator invokes this method to refund the premium
+        require(swaps[secretHash].initiator == msg.sender);
+        // premium timelock should be expired
+        require(block.timestamp > swaps[secretHash].premiumRefundTimestamp);
+        // asset2 should be empty
+        // which means Bob does not participate
+        require(swaps[secretHash].assetState == AssetState.Empty);
+    }
+    // Premium is redeemable for Bob when asset2 is redeemed or refunded
+    // which means Bob participates
+    modifier isPremiumRedeemable(bytes32 secretHash) {
+        // the premium should be deposited
+        require(swaps[secretHash].premiumState == PremiumState.Filled);
+        // the participant invokes this method to redeem the premium
+        require(swaps[secretHash].participant == msg.sender);
+        // the asset2 should be refunded or redeemed
+        require(swaps[secretHash].assetState == AssetState.Refunded || swaps[secretHash].assetState == AssetState.Redeemed);
+        // the premium timelock should not be expired
+        require(block.timestamp <= swaps[secretHash].premiumRefundTimestamp);
+        _;
+    }
+    \end{lstlisting}
+    \label{code:premium_condition_options}
+    \caption{The condition to redeem and refund the premium for American Call Option-style Atomic Swaps.}
+\end{figure}
+
+\subsection{Bitcoin Scripts}
+
+% cannot
+% need one more opcode

@@ -14,6 +14,8 @@
 \usepackage{graphicx}
 \graphicspath{{./figs/}}
 
+\usepackage{listings, xcolor}
+
 \newcommand{\JS}[1]{{\color{blue} [JS] #1}}
 \newcommand{\RC}[1]{{\color{red} [RC] #1}}
 
@@ -31,6 +33,8 @@ TODO
 \keywords{TODO}
 
 \maketitle
+
+\input{solidity-highlighting.tex}
 
 \input{sections/1introduction.tex}
 \input{sections/2background.tex}

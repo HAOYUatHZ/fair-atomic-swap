@@ -24,7 +24,7 @@ contract AtomicSwapWithPremium {
         address payable participant;
         address payable redeemer;
         address payable refunder;
-        uint256 value;
+        uint256 assetValue;
         AssetState assetState;
         uint256 premiumValue;
         PremiumState premiumState;
@@ -36,7 +36,7 @@ contract AtomicSwapWithPremium {
         uint256 refundTimestamp,
         bytes32 secretHash,
         address refunder,
-        uint256 value,
+        uint256 assetValue,
         uint256 premiumValue
     );
 
@@ -45,7 +45,7 @@ contract AtomicSwapWithPremium {
         bytes32 secretHash,
         bytes32 secret,
         address redeemer,
-        uint256 value,
+        uint256 assetValue,
         uint256 premiumValue
     );
 
@@ -57,7 +57,7 @@ contract AtomicSwapWithPremium {
         address participant,
         address redeemer,
         address refunder,
-        uint256 value,
+        uint256 assetValue,
         uint256 premiumValue
     );
 
@@ -69,7 +69,7 @@ contract AtomicSwapWithPremium {
         address participant,
         address redeemer,
         address refunder,
-        uint256 value,
+        uint256 assetValue,
         uint256 premiumValue
     );
 
@@ -81,7 +81,7 @@ contract AtomicSwapWithPremium {
         address participant,
         address redeemer,
         address refunder,
-        uint256 value,
+        uint256 assetValue,
         uint256 premiumValue
     );
 
@@ -93,20 +93,36 @@ contract AtomicSwapWithPremium {
         address participant,
         address redeemer,
         address refunder,
-        uint256 value,
+        uint256 assetValue,
         uint256 premiumValue
     );
 
     constructor() public {}
 
-    modifier isRefundable(bytes32 secretHash) {
+    // TODO:
+    modifier isPremiumRefundable(bytes32 secretHash) {
+        require(swaps[secretHash].premiumState == PremiumState.Filled);
+        require(swaps[secretHash].initiator == msg.sender);
+        require(block.timestamp > swaps[secretHash].refundTimestamp);
+        _;
+    }
+
+    // TODO:
+    modifier isPremiumRedeemable(bytes32 secretHash) {
+        require(swaps[secretHash].premiumState == PremiumState.Filled);
+        require(swaps[secretHash].initiator == msg.sender);
+        require(block.timestamp > swaps[secretHash].refundTimestamp);
+        _;
+    }
+
+    modifier isAssetRefundable(bytes32 secretHash) {
         require(swaps[secretHash].assetState == AssetState.Filled);
         require(swaps[secretHash].refunder == msg.sender);
         require(block.timestamp > swaps[secretHash].refundTimestamp);
         _;
     }
 
-    modifier isRedeemable(bytes32 secretHash, bytes32 secret) {
+    modifier isAssetRedeemable(bytes32 secretHash, bytes32 secret) {
         require(swaps[secretHash].assetState == AssetState.Filled);
         require(swaps[secretHash].redeemer == msg.sender);
         require(sha256(abi.encodePacked(secret)) == secretHash);
@@ -139,7 +155,7 @@ contract AtomicSwapWithPremium {
     }
 
     modifier fulfillPayment(bytes32 secretHash) {
-        require(swaps[secretHash].value == msg.value);
+        require(swaps[secretHash].assetValue == msg.value);
         _;
     }
 
@@ -167,7 +183,7 @@ contract AtomicSwapWithPremium {
                     address payable participant,
                     address payable redeemer,
                     address payable refunder,
-                    uint256 value,
+                    uint256 assetValue,
                     uint256 premiumValue)
         public
         payable
@@ -180,7 +196,7 @@ contract AtomicSwapWithPremium {
         swaps[secretHash].participant = participant;
         swaps[secretHash].redeemer = redeemer;
         swaps[secretHash].refunder = refunder;
-        swaps[secretHash].value = value;
+        swaps[secretHash].assetValue = assetValue;
         swaps[secretHash].premiumValue = premiumValue;
         swaps[secretHash].assetState = AssetState.Empty;
         swaps[secretHash].premiumState = PremiumState.Empty;
@@ -193,7 +209,7 @@ contract AtomicSwapWithPremium {
             participant,
             redeemer,
             refunder,
-            value,
+            assetValue,
             premiumValue 
         );
     }
@@ -216,7 +232,7 @@ contract AtomicSwapWithPremium {
             swaps[secretHash].participant,
             swaps[secretHash].redeemer,
             swaps[secretHash].refunder,
-            swaps[secretHash].value,
+            swaps[secretHash].assetValue,
             msg.value
         );
     }
@@ -243,6 +259,7 @@ contract AtomicSwapWithPremium {
         );
     }
 
+    // TODO:
     // Participant should only participate after premium is paid by the initiator.
     // Once the participant participate, the premium is redeemed immediately by the participant.
     function participate(bytes32 secretHash)
@@ -270,11 +287,11 @@ contract AtomicSwapWithPremium {
         );
     }
 
-    function redeem(bytes32 secret, bytes32 secretHash)
+    function redeemAsset(bytes32 secret, bytes32 secretHash)
         public
-        isRedeemable(secretHash, secret)
+        isAssetRedeemable(secretHash, secret)
     {
-        msg.sender.transfer(swaps[secretHash].value);
+        msg.sender.transfer(swaps[secretHash].assetValue);
 
         swaps[secretHash].assetState = AssetState.Redeemed;
         swaps[secretHash].secret = secret;
@@ -284,20 +301,20 @@ contract AtomicSwapWithPremium {
             secretHash,
             secret,
             msg.sender,
-            swaps[secretHash].value,
+            swaps[secretHash].assetValue,
             swaps[secretHash].premiumValue
         );
     }
 
-    // refund refunds the value back to the refunder..
-    // the premium goes back to the initiator if the contract is obsolete.
-    function refund(bytes32 secretHash)
+    // refundAsset refunds the asset back to the refunder.
+    // Premium has been redeemed by participant when participating, and hence
+    // cannot be refunded back by the initiator.
+    function refundAsset(bytes32 secretHash)
         public
         isPremiumFilled(secretHash)
-        isRefundable(secretHash)
+        isAssetRefundable(secretHash)
     {
-        msg.sender.transfer(swaps[secretHash].value);
-        swaps[secretHash].initiator.transfer(swaps[secretHash].premiumValue);
+        msg.sender.transfer(swaps[secretHash].assetValue);
 
         swaps[secretHash].assetState = AssetState.Refunded;
         swaps[secretHash].premiumState = PremiumState.Refunded;
@@ -306,7 +323,24 @@ contract AtomicSwapWithPremium {
             block.timestamp,
             swaps[secretHash].secretHash,
             msg.sender,
-            swaps[secretHash].value,
+            swaps[secretHash].assetValue,
+            swaps[secretHash].premiumValue
+        );
+    }
+
+    // refund refunds the premium back to the initiator if the contract is obsolete.
+    function refundPremium(bytes32 secretHash)
+        public
+        isPremiumRefundable(secretHash)
+    {
+        swaps[secretHash].initiator.transfer(swaps[secretHash].premiumValue);
+        swaps[secretHash].premiumState = PremiumState.Refunded;
+
+        emit Refunded(
+            block.timestamp,
+            swaps[secretHash].secretHash,
+            msg.sender,
+            swaps[secretHash].assetValue,
             swaps[secretHash].premiumValue
         );
     }

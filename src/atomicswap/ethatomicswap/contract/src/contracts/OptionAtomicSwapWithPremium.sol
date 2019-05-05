@@ -32,7 +32,7 @@ contract AtomicSwapWithPremium {
 
     mapping(bytes32 => Swap) public swaps;
 
-    event Refunded(
+    event AssetRefunded(
         uint256 refundTimestamp,
         bytes32 secretHash,
         address refunder,
@@ -40,8 +40,25 @@ contract AtomicSwapWithPremium {
         uint256 premiumValue
     );
 
-    event Redeemed(
-        uint256 redeemTime,
+    event AssetRedeemed(
+        uint256 redeemTimestamp,
+        bytes32 secretHash,
+        bytes32 secret,
+        address redeemer,
+        uint256 assetValue,
+        uint256 premiumValue
+    );
+
+    event PremiumRefunded(
+        uint256 refundTimestamp,
+        bytes32 secretHash,
+        address refunder,
+        uint256 assetValue,
+        uint256 premiumValue
+    );
+
+    event PremiumRedeemed(
+        uint256 redeemTimestamp,
         bytes32 secretHash,
         bytes32 secret,
         address redeemer,
@@ -296,7 +313,7 @@ contract AtomicSwapWithPremium {
         swaps[secretHash].assetState = AssetState.Redeemed;
         swaps[secretHash].secret = secret;
 
-        emit Redeemed(
+        emit AssetRedeemed(
             block.timestamp,
             secretHash,
             secret,
@@ -319,7 +336,7 @@ contract AtomicSwapWithPremium {
         swaps[secretHash].assetState = AssetState.Refunded;
         swaps[secretHash].premiumState = PremiumState.Refunded;
 
-        emit Refunded(
+        emit AssetRefunded(
             block.timestamp,
             swaps[secretHash].secretHash,
             msg.sender,
@@ -336,7 +353,7 @@ contract AtomicSwapWithPremium {
         swaps[secretHash].initiator.transfer(swaps[secretHash].premiumValue);
         swaps[secretHash].premiumState = PremiumState.Refunded;
 
-        emit Refunded(
+        emit PremiumRefunded(
             block.timestamp,
             swaps[secretHash].secretHash,
             msg.sender,

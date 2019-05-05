@@ -107,38 +107,48 @@ contract RiskySpeculativeAtomicSwapSpot {
 
     constructor() public {}
 
-    // Premium is refundable when
+    // Premium is refundable on blokchian2 when
     // 1. Alice initiates but Bob does not participate
-    //   after premium's timelock expires
-    // 2. asset2 is redeemed by Alice
+    //   after premium's timelock expires;
+    // 2. asset2 is redeemed by Alice;
+    // and refundable on blokchain1 after premium's timelock expires. 
     modifier isPremiumRefundable(bytes32 secretHash) {
         // the premium should be deposited
         require(swaps[secretHash].premiumState == PremiumState.Filled);
         // the initiator invokes this method to refund the premium        
         require(swaps[secretHash].initiator == msg.sender);
-        // if the asset2 timelock is still valid
-        if (block.timestamp <= swaps[secretHash].assetRefundTimestamp) {
-            // the asset2 should be redeemded by Alice
-            require(swaps[secretHash].assetState == AssetState.Redeemed);
-        } else { // if the asset2 timelock is invalid
-            // Bob does not participate
-            require(swaps[secretHash].assetState == AssetState.Empty);
-            // the premium timelock should be expired
-            require(block.timestamp > swaps[secretHash].premiumRefundTimestanp);
+        // if on asset2 chain
+        if(swaps[secretHash].kind == Kind.Participant) {
+            // if the asset2 timelock is still valid
+            if (block.timestamp <= swaps[secretHash].assetRefundTimestamp) {
+                // the asset2 should be redeemded by Alice
+                require(swaps[secretHash].assetState == AssetState.Redeemed);
+            } else { // if the asset2 timelock is invalid
+                // Bob does not participate
+                require(swaps[secretHash].assetState == AssetState.Empty);
+                // the premium timelock should be expired
+                require(block.timestamp > swaps[secretHash].premiumRefundTimestamp);
+            }
+        } else {
+            require(block.timestamp > swaps[secretHash].premiumRefundTimestamp);
         }
         _;
     }
 
-    // Premium is redeemable for Bob when asset2 is refunded
-    // which means Alice holds the secret maliciously
+    // Premium is redeemable on blockchian2 for Bob when asset2 is refunded
+    // which means Alice holds the secret maliciously;
+    // and refundable on blokchain1 before premium timelock expires.
     modifier isPremiumRedeemable(bytes32 secretHash) {
         // the premium should be deposited
         require(swaps[secretHash].premiumState == PremiumState.Filled);
         // the participant invokes this method to redeem the premium
         require(swaps[secretHash].participant == msg.sender);
-        // the asset2 should be refunded
-        // this also indicates the asset2 timelock is expired
-        require(swaps[secretHash].assetState == AssetState.Refunded);
+        // if on asset2 chain
+        if(swaps[secretHash].kind == Kind.Participant) {
+            // the asset2 should be refunded
+            // this also indicates the asset2 timelock is expired
+            require(swaps[secretHash].assetState == AssetState.Refunded);
+        }
         // the premium timelock should not be expired
         require(block.timestamp <= swaps[secretHash].premiumRefundTimestamp);
         _;
@@ -162,6 +172,7 @@ contract RiskySpeculativeAtomicSwapSpot {
         } else {
             require(swaps[secretHash].initiator == msg.sender);
         }
+        require(block.timestamp <= swaps[secretHash].assetRefundTimestamp);
         require(sha256(abi.encodePacked(secret)) == secretHash);
         _;
     }
@@ -335,7 +346,6 @@ contract RiskySpeculativeAtomicSwapSpot {
 
     function refundAsset(bytes32 secretHash)
         public
-        isPremiumFilledState(secretHash)
         isAssetRefundable(secretHash)
     {
         msg.sender.transfer(swaps[secretHash].assetValue);

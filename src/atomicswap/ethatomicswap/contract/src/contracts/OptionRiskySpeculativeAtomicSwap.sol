@@ -206,8 +206,11 @@ contract AtomicSwapWithPremium {
         isAssetEmptyState(secretHash)
         isPremiumEmptyState(secretHash)
     {
-        swaps[secretHash].assetRefundTimestamp = block.timestamp + assetRefundTime;
-        swaps[secretHash].premiumRefundTimestamp = block.timestamp + premiumRefundTime;
+        uint256 assetRefundTimestamp = block.timestamp + assetRefundTime;
+        uint256 premiumRefundTimestamp = block.timestamp + premiumRefundTime;
+
+        swaps[secretHash].assetRefundTimestamp = assetRefundTimestamp;
+        swaps[secretHash].premiumRefundTimestamp = premiumRefundTimestamp;
         swaps[secretHash].secretHash = secretHash;
         swaps[secretHash].initiator = initiator;
         swaps[secretHash].participant = participant;
@@ -268,6 +271,7 @@ contract AtomicSwapWithPremium {
         emit Initiated(
             block.timestamp,
             swaps[secretHash].assetRefundTimestamp,
+            swaps[secretHash].premiumRefundTimestamp,
             secretHash,
             msg.sender,
             swaps[secretHash].participant,
@@ -279,8 +283,6 @@ contract AtomicSwapWithPremium {
     }
 
     // TODO:
-    // Participant should only participate after premium is paid by the initiator.
-    // Once the participant participate, the premium is redeemed immediately by the participant.
     function participate(bytes32 secretHash)
         public
         payable
@@ -290,8 +292,6 @@ contract AtomicSwapWithPremium {
         isPremiumFilled(secretHash)
     {
         swaps[secretHash].assetState = AssetState.Filled;
-        msg.sender.transfer(swaps[secretHash].premiumValue);
-        swaps[secretHash].premiumState = PremiumState.Redeemed;
         
         emit Participated(
             block.timestamp,

@@ -2,9 +2,9 @@
 // Use of this source code is governed by an MIT
 // license that can be found at https://github.com/rivine/rivine/blob/master/LICENSE.
 
-var OptionAtomicSwapWithPremium = artifacts.require("./OptionAtomicSwapWithPremium");
+var NonRiskySpeculativeAtomicSwap = artifacts.require("./NonRiskySpeculativeAtomicSwap");
 
 module.exports = function (deployer) {
   // deployment steps
-  deployer.deploy(OptionAtomicSwapWithPremium);
+  deployer.deploy(NonRiskySpeculativeAtomicSwap);
 };

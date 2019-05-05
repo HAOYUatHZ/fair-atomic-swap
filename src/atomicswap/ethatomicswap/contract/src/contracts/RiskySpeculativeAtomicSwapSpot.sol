@@ -22,7 +22,7 @@ contract RiskySpeculativeAtomicSwapSpot {
         bytes32 secret;
         address payable initiator;
         address payable participant;
-        // Kind kind;
+        Kind kind;
         uint256 assetValue;
         uint256 assetRefundTimestamp;
         AssetState assetState;
@@ -176,7 +176,6 @@ contract RiskySpeculativeAtomicSwapSpot {
 
     // overflow check for assetRefundTimestamp 
     modifier checkRefundTimestampOverflow(uint256 refundTime) {
-        uint256 setupTimestamp = block.timestamp;
         uint256 refundTimestamp = block.timestamp + refundTime;
         require(refundTimestamp > block.timestamp, "calc refundTimestamp overflow");
         require(refundTimestamp > refundTime, "calc refundTimestamp overflow");
@@ -189,8 +188,7 @@ contract RiskySpeculativeAtomicSwapSpot {
                     uint256 assetValue,
                     uint256 assetRefundTime,
                     uint256 premiumValue,
-                    uint256 premiumRefundTime
-                    )
+                    uint256 premiumRefundTime)
         public
         payable
         checkRefundTimestampOverflow(assetRefundTime)
@@ -201,11 +199,11 @@ contract RiskySpeculativeAtomicSwapSpot {
         swaps[secretHash].secretHash = secretHash;
         swaps[secretHash].initiator = initiator;
         swaps[secretHash].participant = participant;
-        // if (premiumValue == 0) {
-        //     swaps[secretHash].kind = Kind.Initiator;
-        // } else {
-        //     swaps[secretHash].kind = Kind.Participant;
-        // }
+        if (premiumValue == 0) {
+            swaps[secretHash].kind = Kind.Initiator;
+        } else {
+            swaps[secretHash].kind = Kind.Participant;
+        }
         swaps[secretHash].assetValue = assetValue;
         swaps[secretHash].assetRefundTimestamp = block.timestamp + assetRefundTime;
         swaps[secretHash].assetState = AssetState.Empty;

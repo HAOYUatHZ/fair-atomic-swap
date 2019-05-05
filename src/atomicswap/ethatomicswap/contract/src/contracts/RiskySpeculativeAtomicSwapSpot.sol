@@ -23,8 +23,6 @@ contract RiskySpeculativeAtomicSwapSpot {
         bytes32 secret;
         address payable initiator;
         address payable participant;
-        address payable redeemer;
-        address payable refunder;
         uint256 assetValue;
         AssetState assetState;
         uint256 premiumValue;
@@ -69,8 +67,6 @@ contract RiskySpeculativeAtomicSwapSpot {
         bytes32 secretHash,
         address initiator,
         address participant,
-        address redeemer,
-        address refunder,
         uint256 assetValue,
         uint256 premiumValue
     );
@@ -82,8 +78,6 @@ contract RiskySpeculativeAtomicSwapSpot {
         bytes32 secretHash,
         address initiator,
         address participant,
-        address redeemer,
-        address refunder,
         uint256 assetValue,
         uint256 premiumValue
     );
@@ -95,21 +89,17 @@ contract RiskySpeculativeAtomicSwapSpot {
         bytes32 secretHash,
         address initiator,
         address participant,
-        address redeemer,
-        address refunder,
         uint256 assetValue,
         uint256 premiumValue
     );
 
+    // TODO:
     event SetUp(
-        uint256 setupTimestamp,
         uint256 assetRefundTimestamp,
         uint256 premiumRefundTimestamp,
         bytes32 secretHash,
         address initiator,
         address participant,
-        address redeemer,
-        address refunder,
         uint256 assetValue,
         uint256 premiumValue
     );
@@ -134,14 +124,15 @@ contract RiskySpeculativeAtomicSwapSpot {
 
     modifier isAssetRefundable(bytes32 secretHash) {
         require(swaps[secretHash].assetState == AssetState.Filled);
-        require(swaps[secretHash].refunder == msg.sender);
+        // require(swaps[secretHash].refunder == msg.sender);
         require(block.timestamp > swaps[secretHash].assetRefundTimestamp);
         _;
     }
 
+    // TODO:
     modifier isAssetRedeemable(bytes32 secretHash, bytes32 secret) {
         require(swaps[secretHash].assetState == AssetState.Filled);
-        require(swaps[secretHash].redeemer == msg.sender);
+        // require(swaps[secretHash].redeemer == msg.sender);
         require(sha256(abi.encodePacked(secret)) == secretHash);
         _;
     }
@@ -195,8 +186,6 @@ contract RiskySpeculativeAtomicSwapSpot {
                     bytes32 secretHash,
                     address payable initiator,
                     address payable participant,
-                    address payable redeemer,
-                    address payable refunder,
                     uint256 assetValue,
                     uint256 premiumValue)
         public
@@ -206,33 +195,25 @@ contract RiskySpeculativeAtomicSwapSpot {
         isAssetEmptyState(secretHash)
         isPremiumEmptyState(secretHash)
     {
-        // uint256 assetRefundTimestamp = block.timestamp + assetRefundTime;
-        // uint256 premiumRefundTimestamp = block.timestamp + premiumRefundTime;
-
-        // swaps[secretHash].assetRefundTimestamp = block.timestamp + assetRefundTime;
-        // swaps[secretHash].premiumRefundTimestamp = block.timestamp + premiumRefundTime;
-        // swaps[secretHash].secretHash = secretHash;
-        // swaps[secretHash].initiator = initiator;
-        // swaps[secretHash].participant = participant;
-        // swaps[secretHash].redeemer = redeemer;
-        // swaps[secretHash].refunder = refunder;
-        // swaps[secretHash].assetValue = assetValue;
-        // swaps[secretHash].premiumValue = premiumValue;
-        // swaps[secretHash].assetState = AssetState.Empty;
-        // swaps[secretHash].premiumState = PremiumState.Empty;
+        swaps[secretHash].assetRefundTimestamp = block.timestamp + assetRefundTime;
+        swaps[secretHash].premiumRefundTimestamp = block.timestamp + premiumRefundTime;
+        swaps[secretHash].secretHash = secretHash;
+        swaps[secretHash].initiator = initiator;
+        swaps[secretHash].participant = participant;
+        swaps[secretHash].assetValue = assetValue;
+        swaps[secretHash].premiumValue = premiumValue;
+        swaps[secretHash].assetState = AssetState.Empty;
+        swaps[secretHash].premiumState = PremiumState.Empty;
         
-        // emit SetUp(
-        //     block.timestamp,
-        //     assetRefundTimestamp,
-        //     premiumRefundTimestamp,
-        //     secretHash,
-        //     initiator,
-        //     participant,
-        //     redeemer,
-        //     refunder,
-        //     assetValue,
-        //     premiumValue 
-        // );
+        emit SetUp(
+            block.timestamp + assetRefundTime,
+            block.timestamp + premiumRefundTime,
+            secretHash,
+            initiator,
+            participant,
+            assetValue,
+            premiumValue 
+        );
     }
 
     // Initiator needs to pay for the premium with premiumValue
@@ -252,8 +233,6 @@ contract RiskySpeculativeAtomicSwapSpot {
             secretHash,
             msg.sender,
             swaps[secretHash].participant,
-            swaps[secretHash].redeemer,
-            swaps[secretHash].refunder,
             swaps[secretHash].assetValue,
             msg.value
         );
@@ -275,8 +254,6 @@ contract RiskySpeculativeAtomicSwapSpot {
             secretHash,
             msg.sender,
             swaps[secretHash].participant,
-            swaps[secretHash].redeemer,
-            swaps[secretHash].refunder,
             msg.value,
             swaps[secretHash].premiumValue
         );
@@ -293,18 +270,16 @@ contract RiskySpeculativeAtomicSwapSpot {
     {
         swaps[secretHash].assetState = AssetState.Filled;
         
-        // emit Participated(
-        //     block.timestamp,
-        //     swaps[secretHash].assetRefundTimestamp,
-        //     swaps[secretHash].premiumRefundTimestamp,
-        //     secretHash,
-        //     swaps[secretHash].initiator,
-        //     msg.sender,
-        //     swaps[secretHash].redeemer,
-        //     swaps[secretHash].refunder,
-        //     msg.value,
-        //     swaps[secretHash].premiumValue
-        // );
+        emit Participated(
+            block.timestamp,
+            swaps[secretHash].assetRefundTimestamp,
+            swaps[secretHash].premiumRefundTimestamp,
+            secretHash,
+            swaps[secretHash].initiator,
+            msg.sender,
+            msg.value,
+            swaps[secretHash].premiumValue
+        );
     }
 
     function redeemAsset(bytes32 secret, bytes32 secretHash)

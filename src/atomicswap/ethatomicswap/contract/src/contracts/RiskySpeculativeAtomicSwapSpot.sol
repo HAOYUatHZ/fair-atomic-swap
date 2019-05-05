@@ -95,7 +95,6 @@ contract RiskySpeculativeAtomicSwapSpot {
         uint256 premiumRefundTimestamp
     );
 
-    // TODO:
     event SetUp(
         bytes32 secretHash,
         address initiator,
@@ -108,33 +107,38 @@ contract RiskySpeculativeAtomicSwapSpot {
 
     constructor() public {}
 
-    // TODO:
     modifier isPremiumRefundable(bytes32 secretHash) {
         require(swaps[secretHash].premiumState == PremiumState.Filled);
         require(swaps[secretHash].initiator == msg.sender);
-        require(block.timestamp > swaps[secretHash].assetRefundTimestamp);
+        require(block.timestamp > swaps[secretHash].premiumRefundTimestamp);
         _;
     }
 
-    // TODO:
     modifier isPremiumRedeemable(bytes32 secretHash) {
         require(swaps[secretHash].premiumState == PremiumState.Filled);
         require(swaps[secretHash].initiator == msg.sender);
-        require(block.timestamp > swaps[secretHash].assetRefundTimestamp);
+        require(block.timestamp > swaps[secretHash].premiumRefundTimestamp);
         _;
     }
 
     modifier isAssetRefundable(bytes32 secretHash) {
         require(swaps[secretHash].assetState == AssetState.Filled);
-        // require(swaps[secretHash].refunder == msg.sender);
+        if(swaps[secretHash].kind == Kind.Initiator) {
+            require(swaps[secretHash].initiator == msg.sender);
+        } else {
+            require(swaps[secretHash].participant == msg.sender);
+        }
         require(block.timestamp > swaps[secretHash].assetRefundTimestamp);
         _;
     }
 
-    // TODO:
     modifier isAssetRedeemable(bytes32 secretHash, bytes32 secret) {
         require(swaps[secretHash].assetState == AssetState.Filled);
-        // require(swaps[secretHash].redeemer == msg.sender);
+        if(swaps[secretHash].kind == Kind.Initiator) {
+            require(swaps[secretHash].participant == msg.sender);
+        } else {
+            require(swaps[secretHash].initiator == msg.sender);
+        }
         require(sha256(abi.encodePacked(secret)) == secretHash);
         _;
     }
@@ -149,7 +153,7 @@ contract RiskySpeculativeAtomicSwapSpot {
         _;
     }
 
-    modifier isPremiumFilled(bytes32 secretHash) {
+    modifier isPremiumFilledState(bytes32 secretHash) {
         require(swaps[secretHash].premiumState == PremiumState.Filled);
         _;
     }
@@ -174,7 +178,6 @@ contract RiskySpeculativeAtomicSwapSpot {
         _;
     }
 
-    // overflow check for assetRefundTimestamp 
     modifier checkRefundTimestampOverflow(uint256 refundTime) {
         uint256 refundTimestamp = block.timestamp + refundTime;
         require(refundTimestamp > block.timestamp, "calc refundTimestamp overflow");
@@ -182,6 +185,8 @@ contract RiskySpeculativeAtomicSwapSpot {
         _;
     }
 
+    // both initiator and participant can set up a contract.
+    // zero-value premiumValue indicates that the contract in on initiator's chain.
     function setup(bytes32 secretHash,
                     address payable initiator,
                     address payable participant,
@@ -265,14 +270,13 @@ contract RiskySpeculativeAtomicSwapSpot {
         );
     }
 
-    // TODO:
     function participate(bytes32 secretHash)
         public
         payable
         isParticipant(secretHash)
         fulfillAssetPayment(secretHash)
         isAssetEmptyState(secretHash)
-        isPremiumFilled(secretHash)
+        isPremiumFilledState(secretHash)
     {
         swaps[secretHash].assetState = AssetState.Filled;
         
@@ -308,7 +312,7 @@ contract RiskySpeculativeAtomicSwapSpot {
 
     function refundAsset(bytes32 secretHash)
         public
-        isPremiumFilled(secretHash)
+        isPremiumFilledState(secretHash)
         isAssetRefundable(secretHash)
     {
         msg.sender.transfer(swaps[secretHash].assetValue);

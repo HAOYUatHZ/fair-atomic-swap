@@ -1,0 +1,35 @@
+title Atomic Swap
+participant Alice
+participant Blockchain1
+participant Blockchain2
+participant Bob
+
+group Setup
+Alice->Blockchain1: create contract_asset1
+Alice->Blockchain2: create contract_asset2
+Alice->Blockchain2: create contract_premium
+end
+
+group Initiate
+Alice->Blockchain1: deposit asset1
+activate Blockchain1 #blue
+Alice->Blockchain2: deposit premium
+activate Blockchain2 #grey
+end
+
+group Participate
+Bob->Blockchain2: deposit asset2
+activate Blockchain2 #red
+end
+
+group Redeem
+thread Alice
+Alice->Blockchain2: redeem asset2
+deactivate Blockchain2 #red
+Alice->Blockchain2: redeem premium
+deactivate Blockchain2 #grey
+thread Bob
+Bob->Blockchain1: redeem asset1
+deactivate Blockchain1
+end
+

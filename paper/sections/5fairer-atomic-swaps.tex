@@ -1,12 +1,6 @@
 \section{A Fair Atomic Cross-Chain Swap}
 \label{sec:fair_atomic_swap}
 
-We propose a solution to make the Atomic Cross-Chain Swap fair: 
-The initiator is responsible for creating the contracts on both blockchains,
-and the participant can choose whether to participate in the swap or not.
-In addition to the original protocol, the initiator should lock an amount of the premium on $BC_2$ as the cost of aborting the swap.
-If the swap is successful, the initiator can redeem the premium back, otherwise the participant will redeem the premium.
-
 \subsection{Design}
 
 \subsubsection{Difference between Currency Exchange and Options}
@@ -15,6 +9,28 @@ If the swap is successful, the initiator can redeem the premium back, otherwise 
 %   if swap is successful || initiator aborts the swap
 % currency exchange: premium goes to seller 
 %   if initiator aborts the swap
+
+Before designing a fair Atomic Cross-Chain Swap protocol, we should know the design objective:
+Is the protocol aiming at currency exchange or the American Call Options?
+
+To our knowledge, the Atomic Cross-Chain Swap protocol is originally designed for the fair exchange between different cryptocurrencies.
+However, according to our analysis, the protocol is equivalent to the premium-free American Call Options, and is unfair due to the free premium.
+
+%TODO
+
+The currency exchange and the American Call Options differ.
+In finance, the currency exchange is by Spot Contracts, while the American Call Options are by Option Contracts.
+A Spot Contract is a contract for buying or selling a commodity, security or currency for immediate settlement.
+An Option Contract is a contract that gives the buyer of the option the right to 
+
+from the following aspects:
+
+\begin{itemize}
+    \item \textbf{Price of the contract itself}: For the currency exchange, the contract itself is free. For the American Call Options, the contract is priced - the premium.
+    \item \textbf{Atomicity}: For the American Call Options, the buyer can abort the contract with the cost of the premium, and the seller cannot.
+    For the currency exchange, neither of the parties can abort the exchange after participating in it.
+    % TODO
+\end{itemize}
 
 \subsubsection{Atomic Swaps for Currency Exchange and Options}
 
@@ -63,16 +79,16 @@ $\mathcal{C}_1$ remains the same as the original protocol, while $\mathcal{C}_2$
     \item $\mathcal{C}^{pr}_2$: The contract for the premium $pr$
 \end{itemize}
 
-$\mathcal{C}^{asset}_2$ is the same as in the original protocol。
+$\mathcal{C}^{asset}_2$ is the same as in the original protocol.
 $\mathcal{C}^{pr}_2$ differs for the currency exchange and the American Call Options.
 
 For currency exchange, $\mathcal{C}^{pr}_2$ is that
 ``Alice pays $pr$ to Bob with the condition: If Bob refunds $x_2$ $Coin_2$ before the timelock $\Delta_1$ (which is definite as $x_2$ $Coin_2$ is timelocked by $\Delta_2 < \Delta_1$), Bob can redeem $pr$, otherwise Bob cannot.
-If $\Delta$ expires, Alice can refund $pr$ back.''
+If $\Delta_1$ expires, Alice can refund $pr$ back.''
 
 For American Call Options, $\mathcal{C}^{pr}_2$ is that
-``Alice pays $pr$ to Bob with the condition: If Alice redeems $x_2$ $Coin_2$ before the timelock $\Delta_1$ (which is definite as $x_2$ $Coin_2$ is timelocked by $\Delta_2 < \Delta_1$), Bob can redeem $pr$, otherwise Bob cannot.
-If $\Delta$ expires, Alice can refund $pr$ back.''
+``Alice pays $pr$ to Bob with the condition: If Alice redeems or Bob refunds $x_2$ $Coin_2$ before the timelock $\Delta_2$ (note that $\Delta_2 < \Delta_1$), Bob can redeem $pr$, otherwise Bob cannot.
+If $\Delta_1$ expires, Alice can refund $pr$ back.''
 
 % ``
 % if $\Delta_1$ is expired:

@@ -356,8 +356,7 @@ contract AtomicSwapWithPremium {
             swaps[secretHash].premiumValue
         );
     }
-
-    // refund refunds the premium back to the initiator if the contract is obsolete.
+    
     function refundPremium(bytes32 secretHash)
         public
         isPremiumRefundable(secretHash)

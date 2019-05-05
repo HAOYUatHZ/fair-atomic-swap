@@ -206,33 +206,33 @@ contract RiskySpeculativeAtomicSwapSpot {
         isAssetEmptyState(secretHash)
         isPremiumEmptyState(secretHash)
     {
-        uint256 assetRefundTimestamp = block.timestamp + assetRefundTime;
-        uint256 premiumRefundTimestamp = block.timestamp + premiumRefundTime;
+        // uint256 assetRefundTimestamp = block.timestamp + assetRefundTime;
+        // uint256 premiumRefundTimestamp = block.timestamp + premiumRefundTime;
 
-        swaps[secretHash].assetRefundTimestamp = assetRefundTimestamp;
-        swaps[secretHash].premiumRefundTimestamp = premiumRefundTimestamp;
-        swaps[secretHash].secretHash = secretHash;
-        swaps[secretHash].initiator = initiator;
-        swaps[secretHash].participant = participant;
-        swaps[secretHash].redeemer = redeemer;
-        swaps[secretHash].refunder = refunder;
-        swaps[secretHash].assetValue = assetValue;
-        swaps[secretHash].premiumValue = premiumValue;
-        swaps[secretHash].assetState = AssetState.Empty;
-        swaps[secretHash].premiumState = PremiumState.Empty;
+        // swaps[secretHash].assetRefundTimestamp = block.timestamp + assetRefundTime;
+        // swaps[secretHash].premiumRefundTimestamp = block.timestamp + premiumRefundTime;
+        // swaps[secretHash].secretHash = secretHash;
+        // swaps[secretHash].initiator = initiator;
+        // swaps[secretHash].participant = participant;
+        // swaps[secretHash].redeemer = redeemer;
+        // swaps[secretHash].refunder = refunder;
+        // swaps[secretHash].assetValue = assetValue;
+        // swaps[secretHash].premiumValue = premiumValue;
+        // swaps[secretHash].assetState = AssetState.Empty;
+        // swaps[secretHash].premiumState = PremiumState.Empty;
         
-        emit SetUp(
-            block.timestamp,
-            assetRefundTimestamp,
-            premiumRefundTimestamp,
-            secretHash,
-            initiator,
-            participant,
-            redeemer,
-            refunder,
-            assetValue,
-            premiumValue 
-        );
+        // emit SetUp(
+        //     block.timestamp,
+        //     assetRefundTimestamp,
+        //     premiumRefundTimestamp,
+        //     secretHash,
+        //     initiator,
+        //     participant,
+        //     redeemer,
+        //     refunder,
+        //     assetValue,
+        //     premiumValue 
+        // );
     }
 
     // Initiator needs to pay for the premium with premiumValue
@@ -293,18 +293,18 @@ contract RiskySpeculativeAtomicSwapSpot {
     {
         swaps[secretHash].assetState = AssetState.Filled;
         
-        emit Participated(
-            block.timestamp,
-            swaps[secretHash].assetRefundTimestamp,
-            swaps[secretHash].premiumRefundTimestamp,
-            secretHash,
-            swaps[secretHash].initiator,
-            msg.sender,
-            swaps[secretHash].redeemer,
-            swaps[secretHash].refunder,
-            msg.value,
-            swaps[secretHash].premiumValue
-        );
+        // emit Participated(
+        //     block.timestamp,
+        //     swaps[secretHash].assetRefundTimestamp,
+        //     swaps[secretHash].premiumRefundTimestamp,
+        //     secretHash,
+        //     swaps[secretHash].initiator,
+        //     msg.sender,
+        //     swaps[secretHash].redeemer,
+        //     swaps[secretHash].refunder,
+        //     msg.value,
+        //     swaps[secretHash].premiumValue
+        // );
     }
 
     function redeemAsset(bytes32 secret, bytes32 secretHash)

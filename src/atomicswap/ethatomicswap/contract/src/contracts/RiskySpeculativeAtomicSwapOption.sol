@@ -107,8 +107,7 @@ contract RiskySpeculativeAtomicSwapSpot {
 
     constructor() public {}
 
-    // On blockchain1: premium is refundable for Alice after premium's timelock expires
-    // On blockchain2: premium is refundable for Alice only when Alice initiates
+    // Premium is refundable on blockchain2 for Alice only when Alice initiates
     // but Bob does not participate after premium's timelock expires
     modifier isPremiumRefundable(bytes32 secretHash) {
         // on asset2 chain
@@ -124,8 +123,7 @@ contract RiskySpeculativeAtomicSwapSpot {
         _;
     }
 
-    // On blockchain1: premium is redeemable for Bob before premium's timelock expires
-    // On blockchain2: premium is redeemable for Bob if Bob participates and redeems
+    // Premium is redeemable on blockchain2 for Bob if Bob participates and redeems
     // before premium's timelock expires
     modifier isPremiumRedeemable(bytes32 secretHash) {
         // on asset2 chain

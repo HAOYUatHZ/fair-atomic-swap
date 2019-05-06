@@ -123,7 +123,7 @@ contract RiskySpeculativeAtomicSwapSpot {
             // the asset2 should be redeemded by Alice
             require(swaps[secretHash].assetState == AssetState.Redeemed);
         } else {
-            // TODO
+            require(block.timestamp > swaps[secretHash].premiumRefundTimestanp);
             require(swaps[secretHash].assetState != AssetState.Refunded);
         }
         _;

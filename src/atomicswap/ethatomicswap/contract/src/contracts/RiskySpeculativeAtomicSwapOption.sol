@@ -111,17 +111,15 @@ contract RiskySpeculativeAtomicSwapSpot {
     // On blockchain2: premium is refundable for Alice only when Alice initiates
     // but Bob does not participate after premium's timelock expires
     modifier isPremiumRefundable(bytes32 secretHash) {
+        // on asset2 chain
+        require(swaps[secretHash].kind == Kind.Participant);
         // the premium should be deposited
         require(swaps[secretHash].premiumState == PremiumState.Filled);
         // the initiator invokes this method to refund the premium
         require(swaps[secretHash].initiator == msg.sender);
-        // if on asset2 chain
-        if(swaps[secretHash].kind == Kind.Participant) {
-            // asset2 should be empty
-            // which means Bob does not participate
-            require(swaps[secretHash].assetState == AssetState.Empty);
-        }
-        // premium timelock should be expired
+        // asset2 should be empty
+        // which means Bob does not participate
+        require(swaps[secretHash].assetState == AssetState.Empty);
         require(block.timestamp > swaps[secretHash].premiumRefundTimestamp);
         _;
     }
@@ -130,15 +128,15 @@ contract RiskySpeculativeAtomicSwapSpot {
     // On blockchain2: premium is redeemable for Bob if Bob participates and redeems
     // before premium's timelock expires
     modifier isPremiumRedeemable(bytes32 secretHash) {
+        // on asset2 chain
+        require(swaps[secretHash].kind == Kind.Participant) {
         // the premium should be deposited
         require(swaps[secretHash].premiumState == PremiumState.Filled);
         // the participant invokes this method to redeem the premium
         require(swaps[secretHash].participant == msg.sender);
-        // if on asset2 chain
-        if(swaps[secretHash].kind == Kind.Participant) {
-            // if Bob participates
-            require(swaps[secretHash].assetState != AssetState.Empty);
-        }
+        // TODO
+        // if Bob participates
+        require(swaps[secretHash].assetState != AssetState.Empty);
         // the premium timelock should not be expired
         require(block.timestamp <= swaps[secretHash].premiumRefundTimestamp);
         _;

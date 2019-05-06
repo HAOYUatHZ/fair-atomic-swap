@@ -132,7 +132,6 @@ contract RiskySpeculativeAtomicSwapSpot {
         require(swaps[secretHash].premiumState == PremiumState.Filled);
         // the participant invokes this method to redeem the premium
         require(swaps[secretHash].participant == msg.sender);
-        // TODO
         // if Bob participates
         require(swaps[secretHash].assetState != AssetState.Empty);
         // the premium timelock should not be expired

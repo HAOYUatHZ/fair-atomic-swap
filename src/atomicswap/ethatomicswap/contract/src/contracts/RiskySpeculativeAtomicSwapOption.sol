@@ -109,7 +109,7 @@ contract RiskySpeculativeAtomicSwapSpot {
 
     // On blockchain1: premium is refundable for Alice after premium's timelock expires
     // On blockchain2: premium is refundable for Alice only when Alice initiates
-    // but Bob does not participate after premium's timelock expires
+    // but Bob does not participate after asset2's timelock expires
     modifier isPremiumRefundable(bytes32 secretHash) {
         // the premium should be deposited
         require(swaps[secretHash].premiumState == PremiumState.Filled);
@@ -117,12 +117,13 @@ contract RiskySpeculativeAtomicSwapSpot {
         require(swaps[secretHash].initiator == msg.sender);
         // if on asset2 chain
         if(swaps[secretHash].kind == Kind.Participant) {
-            // asset2 should be empty
-            // which means Bob does not participate
+            // Bob does not participate before assetRefundTimestamp
             require(swaps[secretHash].assetState == AssetState.Empty);
+            require(block.timestamp > swaps[secretHash].assetRefundTimestamp);
+        } else {
+            // premium timelock should be expired
+            require(block.timestamp > swaps[secretHash].premiumRefundTimestamp);
         }
-        // premium timelock should be expired
-        require(block.timestamp > swaps[secretHash].premiumRefundTimestamp);
         _;
     }
 

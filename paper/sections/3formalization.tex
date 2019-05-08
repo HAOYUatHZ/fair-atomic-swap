@@ -3,7 +3,7 @@
 
 \subsection{American Call Option}
 
-The American Call Option is a contract that ``one can buy an amount of an asset with an agreed price prior to or on an agreed time in the future''.
+The American Call Option is a contract that ``one can buy an amount of an asset with an agreed price prior to or on an agreed time in the future''. \HY{any ref? Or ref in BACKGROUND section? is "can buy" sufficient to indicate that the two parties may also choose to abort the contract (never exercise)?}
 The agreed price is usually called the \textit{spot price}, and the buying is called \textit{exercising}.
 For American Call Option, the buyer can exercise in advanced of the agreed exercise time.
 The price of the asset when exercising is called the \textit{strike price}.
@@ -87,7 +87,7 @@ takes $s$,
 and returns $\mathcal{V} \in \{true, false\}$ indicating if the redemption is successful or not.
 The redemption can be performed by both parties, and Alice should redeem earlier than Bob.
 As Alice knows $s$, she can redeem $x_2$ $Coin_2$ - pay $x_2$ $Coin_2$ in $\beta{A, 2}$ to her another address by attaching $s$ in this transaction.
-After Alice redeems $x_2$ $Coin_2$, $s$ is published, so that Bob can redeem $x_1$ $Coin_1$, similarly.
+After Alice redeems $x_2$ $Coin_2$, $s$ is published, \HY{and hence revealed to everyone including Bob, }so that Bob can redeem $x_1$ $Coin_1$, similarly.
 
 \paragraph{Refund}
 takes no parameters and returns the $\mathcal{V} \in \{true, false\}$ indicating if the refund is successful or not.

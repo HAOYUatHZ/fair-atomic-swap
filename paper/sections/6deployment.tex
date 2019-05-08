@@ -201,13 +201,13 @@ function redeemPremium(bytes32 secretHash)
 
 % bitcoin cannot implement
 % because stateless
-Unfortunately, Bitcoin script cannot implement our protocols, because the Bitcoin script does not support the stateful transaction functionalities - it is designed to be stateless.
+Unfortunately, Bitcoin script cannot implement our protocols, because the Bitcoin script does not support the stateful transaction functionalities - it is designed to be stateless. \HY{Maybe explain why itz stateless? e.g., therez no such a thing as "world state"; and nothing about the state is stored?}
 
 % new opcode
 \paragraph{New Opcode OP\_LOOKUP\_OUTPUT}
 In order to make Bitcoin script support our protocols, we propose a new opcode called OP\_LOOKUP\_OUTPUT.
 OP\_LOOKUP\_OUTPUT takes the id of an output, and produces the address of the output's owner.
-With OP\_LOOKUP\_OUTPUT, the Bitcoin script can decide whether Alice or Bob should take the premium by \textbf{<asset2\_output> OP\_LOOKUP\_OUTPUT <Alice\_pubkeyhash> OP\_EQUALVERIFY}.
+With OP\_LOOKUP\_OUTPUT, the Bitcoin script can decide whether Alice or Bob should take the premium by \textbf{<asset2\_output> OP\_LOOKUP\_OUTPUT <Alice\_pubkeyhash> OP\_EQUALVERIFY}. \HY{The printed paragraph doesn't fit to the page margin, at least in mine.}
 
 % implement opcode is easy
 Implementing OP\_LOOKUP\_OUTPUT is easy in Bitcoin - It only queries the ownership of an output from the indexed blockchain database, and does not require any computation.

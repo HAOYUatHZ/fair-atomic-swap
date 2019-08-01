@@ -40,28 +40,44 @@
 
 \begin{document}
 \title{On the optionality and fairness of Atomic Swaps}
-\author{Submission \#19}
 
+\author{Runchao Han}
+\email{runchao.han@monash.edu}
+\affiliation{%
+  \institution{Monash University and CSIRO-Data61}
+}
+
+\author{Haoyu Lin}
+\email{chris.haoyul@gmail.com}
+\affiliation{%
+  \institution{}
+}
+
+\author{Jiangshan Yu}
+\email{jiangshan.yu@monash.edu}
+\affiliation{
+  \institution{Monash University}
+}
 
 \begin{abstract}
 Atomic Swap enables two parties to atomically exchange their own cryptocurrencies without trusted third parties.
+% problem
+However, ZmnSCPxj points our that an Atomic Swap is equivalent to an American Call Option without the premium, thus is unfair to the swap participant.
 % work
-In this paper, we investigate the fairness of the Atomic Swap protocol.
+In this paper, we investigate the (un)fairness of the Atomic Swap protocol.
 % 1
-First, we model the Atomic Swap as the American Call Option,
-and prove that an Atomic Swap is equivalent to an American Call Option without the premium.
-Thus, the Atomic Swap is unfair to the swap participant.
-% 2
-Second, we quantify the unfairness of the Atomic Swap and compare it with that of conventional financial assets (stocks and fiat currencies).
+First, we quantify the unfairness of Atomic Swap and compare it with that of conventional financial assets (stocks and fiat currencies).
 The quantification results show that the Atomic Swaps are much more unfair on cryptocurrencies than on stocks and fiat currencies in the same setting.
+% 2
+Second, we use the conventional Cox-Ross-Rubinstein option pricing model in Finance to estimate the premium, and show that the estimated premium for cryptocurrencies is $2\% \sim 3\%$ of the asset value, while the premium for stocks and fiat currencies is approximately $0.3\%$.
 % 3
-Third, we use the conventional Cox-Ross-Rubinstein option pricing model in Finance to estimate the premium, and show that the estimated premium for cryptocurrencies is $2\% \sim 3\%$ of the asset value, while the premium for stocks and fiat currencies is approximately $0.3\%$.
-% 4
-Finally, we propose two fair Atomic Swap protocols,
+Third, we propose two fair Atomic Swap protocols,
 one is for currency exchange and the other is for American Call Options.
 Our protocols are based on the original Atomic Swap protocol, but implement the premium mechanism.
 Blockchains supporting smart contracts such as Ethereum support our protocols directly.
 Blockchains only supporting scripts such as Bitcoin can support our protocols by adding a simple opcode.
+% 4
+Last, we give the reference implementation of our protocols in Solidity, and give detailed instructions on implementing our protocols with Bitcoin script.
 \end{abstract}
 
 \keywords{Blockchain; Atomic Swap; Cross-Chain Transactions; American Call Option}

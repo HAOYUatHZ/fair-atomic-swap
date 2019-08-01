@@ -181,7 +181,7 @@ function redeemPremium(bytes32 secretHash)
     // update the premium state to redeemded
     swaps[secretHash].premiumState = PremiumState.Redeemed;
     // notify the function invoker
-    emit PremiumRefunded(
+    emit PremiumRedeemed(
         block.timestamp,
         swaps[secretHash].secretHash,
         msg.sender,

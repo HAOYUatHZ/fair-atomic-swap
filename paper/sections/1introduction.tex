@@ -7,11 +7,11 @@ In blockchains, Atomic Swap is usually implemented by using Hashed Time-locked C
 The HTLC is a type of transaction that, the payee should provide the preimage of a hash value before a specified deadline, otherwise the payment fails - the money goes back to the payer and the payee will not get any money.
 
 % how important is Atomic Swap
-The Atomic Swaps have already been widely adopted in the cryptocurrency industry.
-In particular, it realized the Decentralized Exchanges (DEXes), and started the era of Decentralized Finance (De-Fi).
+Atomic Swap has already been widely adopted in the cryptocurrency industry.
+In particular, it realised the Decentralised Exchanges (DEXes), and started the era of Decentralised Finance (De-Fi).
 In a DEX, traders publish and participate in deals, and the dealing process is regulated by a smart contract embedding the Atomic Swap protocol.
-Different from centralized exchanges, DEXes are non-custodial - traders does not need to deposit their money in DEXes.
-The non-custody property avoids DEXes from money thefts, which commonly happened on centralized exchanges.
+Different from centralised exchanges, DEXes are non-custodial - traders does not need to deposit their money in DEXes.
+The non-custody property avoids DEXes from money thefts, which commonly happened on centralised exchanges.
 To date, the DEX market volume has reached approximately 50,000 ETH~\cite{dexwatch}.
 More specifically,
 there are more than 250 DEXes~\cite{distribuyed/index},
@@ -22,14 +22,14 @@ and more than 4,000 active traders in all DEXes~\cite{dexwatch}.
 
 % research problem
 However, being atomic does not indicate the Atomic Swap is fair.
-In particular, in an Atomic Swap, the swap initiator can decide whether to proceed or abort the swap, and the default maximum time for him to decide is 24 hours~\cite{nolan2013alt}.
+In an Atomic Swap, the swap initiator can decide whether to proceed or abort the swap, and the default maximum time for him to decide is 24 hours~\cite{nolan2013alt}.
 This enables the the swap initiator to speculate without any penalty.
 More specifically, the swap initiator can keep waiting before the timelock expires.
 If the price of the swap participant's asset rises, the swap initiator will proceed the swap so that he will profit.
 If the price of the swap participant's asset drops, the swap initiator can abort the swap, so that he won't lose money.
 
 % optionality
-We observe that, this problem is equivalent to the Optionality in Finance, which has already been studied for decades~\cite{higham2004introduction}.
+ZmnSCPxj~\cite{optionality-origin} observed that, this problem is equivalent to the Optionality in Finance, which has already been studied for decades~\cite{higham2004introduction}.
 In Finance, an investment is said to have Optionality if
 1) settling this investment happens in the future rather than instantly;
 2) settling this investment is optional rather than mandatory.
@@ -38,20 +38,20 @@ The option buyer should pay for the premium besides the underlying asset, even i
 In this way, he can no longer speculate without penalties.
 
 % initiator in atomic swap has optionality
-In the Atomic Swap, the swap initiator has the Optionality, as he can choose whether to proceed or abort the swap.
+In Atomic Swap, the swap initiator has the Optionality, as he can choose whether to proceed or abort the swap.
 Unfortunately, the swap initiator is not required to pay for the premium - the Atomic Swap does not take the Optionality into account.
 % atomic swap should not have optionality
-Furthermore, the Atomic Swap should not have Optionality.
-The Atomic Swap is designed for currency exchange, and the currency exchange has no Optionality.
+Furthermore, Atomic Swap should not have Optionality.
+Atomic Swap is designed for currency exchange, and the currency exchange has no Optionality.
 Instead, once both parties agree on a currency exchange, it should be settled without any chance to regret.
 
 % what we do briefly
-In this paper, we investigate the unfairness of the Atomic Swap.
+In this paper, we investigate the unfairness of Atomic Swap.
 We start from describing the Atomic Swap and the American Call Option in Finance,
-then we point out that an Atomic Swap is equivalent to a premium-free American Call Option.
-Following this observation, we then evaluate how unfair the Atomic Swap is from two different perspectives:
+then we show how an Atomic Swap is equivalent to a premium-free American Call Option.
+After that, we then evaluate how unfair the Atomic Swap is from two different perspectives:
 quantifying the unfairness and estimating the premium.
-After that, we propose an improvement on the Atomic Swap, which implements the premium mechanism, to make it fair.
+Furthermore, we propose an improvement on the Atomic Swap, which implements the premium mechanism, to make it fair.
 Our improvement supports blockchains with smart contracts (e.g. Ethereum) directly, and can support blockchains with scripts only (e.g. Bitcoin) by adding a single opcode.
 We also implement our protocol in Solidity (a smart contract programming language for Ethereum), and give detailed instructions on implementing our protocols on Bitcoin.
 
@@ -59,25 +59,9 @@ We also implement our protocol in Solidity (a smart contract programming languag
 
 Our contributions are as follows:
 
-\paragraph{We point out that the Atomic Swap is equivalent to the premium-free American Call Option.}
-We describe the Atomic Swap and the American Call Option,
-then we point out that an Atomic Swap is equivalent to a premium-free American Call Option, which is a type of Options (in Finance).
-More specifically:
-the initiator and the participant in an Atomic Swap are the option buyer and the option seller in an American Call Option, respectively;
-the initiator asset and the participant asset in an Atomic Swap are the used currency and the underlying asset in an American Call Option, respectively;
-the participant asset's timelock in an Atomic Swap is the strike time in an American Call Option;
-the current price of the participant asset in an Atomic Swap is the strike price in an American Call Option;
-redeeming cryptocurrencies in an Atomic Swap is equivalent to exercising the contract in an American Call Option.
-
-\paragraph{We show that the Atomic Swap is unfair to the participant.}
-We point out that, according to Finance, the Atomic Swap - represented as the premium-free American Call Option - is unfair to the participant, especially in the highly volatile cryptocurrency market.
-In practice, the initiator can decide whether to proceed the swap while investigating the cryptocurrency market.
-However, proceeding or aborting the swap does not require the initiator to pay for the premium.
-This leads to the scenario that, if the participant's asset price rises before the strike time, he will proceed the swap to profit, otherwise he will abort the swap to avoid losing money.
-In this way, the swap initiator can speculate without any risk in Atomic Swaps.
-
-\paragraph{We quantify the unfairness of the Atomic Swap, and compare it with that of conventional financial assets.}
-We quantify how unfair the Atomic Swap with mainstream cryptocurrency pairs is, and compare this unfairness with those of conventional financial assets (stocks and fiat currencies).
+\paragraph{We quantify the unfairness of Atomic Swap, and compare it with that of conventional financial assets.}
+Following ZmnSCPxj's observation~\cite{optionality-origin} that the Atomic Swap is equivalent to the premium-free American Call Option,
+we quantify how unfair the Atomic Swap with mainstream cryptocurrency pairs is, and compare this unfairness with those of conventional financial assets (stocks and fiat currencies).
 We first classify the unfairness to two parts, namely the profit when the price rises and the mitigated loss when the price drops, then quantify them based on historical exchange rate volatility.
 Our results show that, in the default timelock setting, the profit and the mitigated loss of our selected cryptocurrency pairs are approximately 1\%, while for stocks and fiat currencies the values are approximately 0.3\% and 0.15\%, respectively.
 
@@ -93,7 +77,6 @@ we propose an improvement on the Atomic Swap, which implements the premium mecha
 It supports both the currency exchange-style Atomic Swap and the American Call Option-style Atomic Swap.
 In the currency exchange-style Atomic Swap, the premium will go back to the swap initiator if the swap is successful.
 In the American Call Option-style Atomic Swap, the premium will definitely go to the swap participant if the participant participates in the swap.
-
 
 \paragraph{We describe how to implement our protocol on existing blockchains.}
 We give instructions to implement our protocols on existing blockchains,
@@ -117,8 +100,8 @@ We also give that in Bitcoin script (which assumes ``OP\_LOOKUP\_OUTPUT'' exists
 
 The paper is structured as follows.
 Section~\ref{sec:background} describes the background of Atomic Swap and options in Finance.
-Section~\ref{sec:formalization} describes the Atomic Swap and the American Call Option, and points out the Atomic Swap protocol is equivalent to the premium-free American Call Option.
-Section~\ref{sec:evaluation} evaluates the Atomic Swap unfairness by analyzing the volatility and pricing the premium of mainstream cryptocurrency pairs.
+Section~\ref{sec:formalization} describes the Atomic Swap and the American Call Option, and shows how the Atomic Swap protocol is equivalent to the premium-free American Call Option.
+Section~\ref{sec:evaluation} evaluates the Atomic Swap unfairness by analysing the volatility and pricing the premium of mainstream cryptocurrency pairs.
 Section~\ref{sec:fair_atomic_swap} describes our proposed fair Atomic Swap protocols.
 Section~\ref{sec:implementation} describes how to implement our proposed protocols on existing blockchains.
 Section~\ref{sec:discussion} discusses security issues of Atomic Swaps, other countermeasures for solving the Atomic Swap unfairness, and limitations of our protocols.

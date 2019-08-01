@@ -17,7 +17,7 @@
 
 ==Abstract==
 
-This BIP describes a new opcode (OP_LOOKUP_OUTPUT) for the Bitcoin scripting system that allowing a transaction output's owner to be looked up.
+This BIP describes a new opcode (OP_LOOKUP_OUTPUT) for the Bitcoin scripting system that allows to look up a transaction output's owner.
 
 ==Summary==
 
@@ -25,7 +25,7 @@ OP_LOOKUP_OUTPUT takes the id of an output, and produces the address of the outp
 
 ==Motivation==
 
-Atomic swap protocols which exchange two different currencies (on different blockchains) can introduce an optionality. The initior can abort the deal without receiving any penalty. Such a problem is known as ''Free Option Problem'' as described in:
+The Atomic Swap protocol enables two parties to exchange cryptocurrencies on different blockchains atomically. However, the usage of Hash Timelocked Contracts (HTLCs) in Atomic Swap introduces optionality: The initior can abort the deal without receiving any penalty. This problem is known as ''Free Option Problem'', as described in:
 
 * https://en.bitcoin.it/wiki/Atomic_swap#Financial_optionality
 * https://blog.bitmex.com/atomic-swaps-and-distributed-exchanges-the-inadvertent-call-option/
@@ -36,9 +36,9 @@ To resolve this problem, the unfair behaviour should receive punishment. To appl
 
 To resolve the new problem, the owner of a refered output needs to be known, and then it can be decided whether the initiator or the participant could take the premium.
 
-===Interaction===
+===A Fair Atomic Swap===
 
-A more fair atomic swap protocol has following steps:
+Here is a fair Atomic Swap protocol which implements the premium mechanism.
 
 ;1. Initiate
 
@@ -130,15 +130,11 @@ As long as the initiator doesn't misbehave, i.e.,
 # the initiator is an honest one but it is the participant who choose not to participate, making the deal aborted; or
 # the initiator does reveal secret ''s'' and the deal does not get aborted, the initior can refund amount_premium ''coin_2'' at the end.
 
-==Rationale==
+==Deployment==
 
-Implementing OP_LOOKUP_OUTPUT is easy in Bitcoin - it only queries the ownership of an output from the indexed blockchain database.
+Implementing OP_LOOKUP_OUTPUT is easy in Bitcoin: It queries the ownership of an output from the indexed blockchain database, then returns the address holding this output.
 
-This neither introduce computation overhead, nor break the "stateless" design of the Bitcoin script.
-
-==Backwards Compatibility==
-
-As adding this opcode will neither affect the way how existing HTLCs work nor break the "stateless" design of the Bitcoin script, it's backwards-compatible for old clients. This opcode is indeed aiming at providing the new ability of a more fair atomic swap.
+Adding this opcode will not break the "stateless" design of the Bitcoin script. It does not affect the verifications of old transactions, so only requires a soft fork rather than a hard fork.
 
 ==Copyright==
 

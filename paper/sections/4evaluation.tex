@@ -3,7 +3,7 @@
 
 In this section, we evaluate the unfairness of the Atomic Swap based on our observation in Section~\ref{sec:formalization}.
 In particular, our evaluations are from two perspectives: quantifying the unfairness and estimating the unpaid premium.
-Quantifying the unfairness is based on analyzing the historical exchange rate volatility.
+Quantifying the unfairness is based on analysing the historical exchange rate volatility.
 Estimating the unpaid premium is based on the Cox-Ross-Rubinstein model - the conventional option pricing model for pricing American-style options in Finance.
 Furthermore, we also evaluate conventional financial assets - the stocks and the currency exchanges - and compare their results with cryptocurrencies.
 
@@ -52,7 +52,7 @@ We use S\&P500 and Dow Jones Index (DJI) as examples of stock indices, and USD-E
 
 \begin{figure}[htp]
     \includegraphics[width=\linewidth]{vol_scatter.eps}
-    \caption{Visualizing the expected profit rate $E_\alpha$ and the expected mitigated risk rate $E_\beta$ for each cryptocurrency pair, stock index and fiat currency pair.}
+    \caption{Visualising the expected profit rate $E_\alpha$ and the expected mitigated risk rate $E_\beta$ for each cryptocurrency pair, stock index and fiat currency pair.}
     \label{fig:vol_scatter}
 \end{figure}
 
@@ -67,7 +67,7 @@ This indicates that in the setting of an 24-hour Atomic Swap, the Atomic Swap wi
 
 
 % scatter results and analysis
-Figure~\ref{fig:vol_scatter} visualizes $E_\alpha$ and $E_\beta$ of all evaluated items in Figure~\ref{fig:volatility_analysis}.
+Figure~\ref{fig:vol_scatter} visualises $E_\alpha$ and $E_\beta$ of all evaluated items in Figure~\ref{fig:volatility_analysis}.
 In particular, we classify scatters to 4 groups based on their $E_\alpha$ and $E_\beta$:
 The first group ($ 0 < E_\alpha < 0.005 \wedge 0 < E_\beta < 0.005$) consists of all stock indices (S\&P500 and DJI) and all fiat currency pairs (USD-GBP and USD-EUR);
 the second group ($0.005 < E_\alpha < 0.015 \wedge 0.005 < E_\beta < 0.015$) consists of most cryptocurrency pairs;
@@ -106,16 +106,16 @@ Therefore, although more volatile than stocks and fiat currencies, exchange rate
 
 \subsection{Estimating the premium}
 
-The unfairness of the Atomic Swap comes from the fact that Alice can abort the contract without punishment.
+The unfairness of Atomic Swap comes from the fact that Alice can abort the contract without punishment.
 In Finance, the premium mechanism guarantees the good behaviours.
 As the Atomic Swap is equivalent to the premium-free American Call Option, the CRR model can be used for estimating the premium of Atomic Swaps.
-Therefore, we can evaluate the unfairness of the Atomic Swap by estimating the premium for American Call Options with cryptocurrencies.
+Therefore, we can evaluate the unfairness of Atomic Swap by estimating the premium for American Call Options with cryptocurrencies.
 
 As the premium is the only variable in an option contract, estimating the premium is also called the ``Option Pricing'' problem.
-In Finance, the Black-Scholes (BS) Model is utilized to price the European Call Options,
-while the Cox-Ross-Rubinstein (CRR) Model is utilized to price the American Call Options.
+In Finance, the Black-Scholes (BS) Model~\cite{black1973pricing} is utilised to price the European Call Options,
+while the Cox-Ross-Rubinstein (CRR) Model~\cite{cox1979option} is utilised to price the American Call Options.
 
-Therefore, in order to evaluate the unfairness of the Atomic Swap, we use the CRR Model to estimate how much the premium should be in Atomic Swaps.
+Therefore, in order to evaluate the unfairness of Atomic Swap, we use the CRR Model to estimate how much the premium should be in Atomic Swaps.
 
 \subsubsection{The Cox-Ross-Rubinstein Model Explained}
 
@@ -164,7 +164,7 @@ Therefore, in order to evaluate the unfairness of the Atomic Swap, we use the CR
 \hline
 Variable             & Description                                                                               & Comment                  \\\hline
 $u, d$               & The rising and dropping rates for prices in the binomial tree $\mathcal{T}$                & $u \cdot d = 1$          \\\hline
-$\sigma_d, \sigma_a$ & The daily and annualized percentage change rates of asset prices                          &                          \\\hline
+$\sigma_d, \sigma_a$ & The daily and annualised percentage change rates of asset prices                          &                          \\\hline
 $T$                  & The strike time (measured in years)                                                       &                          \\\hline
 $n$                  & The depth of $\mathcal{T}$                                                                & we pick $n = 36$         \\\hline
 $\Delta t$           & The time period between two adjacent nodes on $\mathcal{T}$ (measured in years)           & $\Delta_t = \frac{T}{n}$ \\\hline
@@ -198,7 +198,7 @@ The CRR model assumes that the asset price will either move up or down by a spec
 The move-up factor is $u$, and the move-down factor is $d$.
 For example, given the initial asset price $S_{0, 1}$, the asset price after one move-up $S_{\frac{T}{n}, 1}$ is $u \cdot S_{0, 1}$, and the asset price after one move-down $S_{\frac{T}{n}, 2}$ is $d \cdot S_{0, 1}$.
 
-$u$ and $d$ are calculated using the annualized volatility $\sigma_a$ of the underlying asset price.
+$u$ and $d$ are calculated using the annualised volatility $\sigma_a$ of the underlying asset price.
 In the CRR model, the move-up and move-down are symmetric - $u \cdot d = 1$, and the rate of move-up and move-down is positive correlated with $\sigma_a$:
 
 \begin{align} 
@@ -248,7 +248,7 @@ such that the premium distribution simulates the geometric Brownian motion~\cite
 
 In this way, the earliest premium $C_{0, 1}$, which is our targeted estimated premium $C$ - can be calculated by iteratively back-propagating the later premiums.
 
-Table~\ref{table:summary_symbols_crr} summarizes all symbols used in the Cox-Ross-Rubinstein model. 
+Table~\ref{table:summary_symbols_crr} summarises all symbols used in the Cox-Ross-Rubinstein model. 
 
 \subsubsection{Experiments}
 

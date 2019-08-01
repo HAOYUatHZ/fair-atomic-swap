@@ -1,17 +1,22 @@
 \section{Related Work}
 \label{sec:related_work}
 
-\paragraph{Atomic Swaps}
 The Atomic Swap protocol was first proposed on the BitcoinTalk forum informally in 2013~\cite{nolan2013alt}.
-Herlihy et al. first formalized the Atomic Swap protocol~\cite{herlihy2018atomic}.
-Meyden et al. first formally analyzed the Atomic Swap smart contracts~\cite{van2018specification}.
-Several Atomic Swap variants were proposed for sidechains~\cite{robinson2019atomic} and solving conflicts due to concurrent operations~\cite{zakhary2019atomic}.
+Herlihy et al. first formalised the Atomic Swap protocol~\cite{herlihy2018atomic}.
+Meyden et al. first formally analysed the Atomic Swap smart contracts~\cite{van2018specification}.
+Several Atomic Swap variants were proposed for sidechains~\cite{robinson2019atomic} and solving conflicts from concurrent operations~\cite{zakhary2019atomic}.
 
-\paragraph{Optionality of Atomic Swaps}
+Our paper is the first attempt to quantify the unfairness of Atomic Swap.
 The optionality of Atomic Swaps was first identified by an anonymous person entitled ZmnSCPxj in the Lightning-dev mail list in 2018~\cite{optionality-origin}.
-Eizinger et al. first tried to address the optionality problem by implementing the premium mechanism in the Atomic Swap\cite{first-attempt-optionality}.
-Liu et al. used the Atomic Swap to construct the option~\cite{liu2018atomic}, but paying for the premium requires an extra blockchain besides the two blockchains, and they do not justify its fairness.
+BitMEX Research~\cite{bitmex-inadvertent-call-option} and Dan Robinson~\cite{htlcs-considered-harmful} further claimed that the optionality cannot be eliminated in HTLC-based Atomic Swaps.
+However, they do not quantify the unfairness from such optionality.
 
-\paragraph{Option Pricing}
-The Black-Scholes model is the first model to price the European options~\cite{black1973pricing}.
-The Cox-Ross-Rubinstein extended the Black-Scholes to price the American Options~\cite{cox1979option}.
+Also, our paper proposes the first fair Atomic Swap protocol.
+Eizinger et al. first tried to address the optionality problem by implementing the premium mechanism in Atomic Swap~\cite{first-attempt-optionality}. However, their protocol is flawed: If Bob keeps not participating in the swap, he will get the premium.
+Liu used the Atomic Swap to construct the option~\cite{liu2018atomic}, but paying for the premium requires an extra blockchain besides the two blockchains, and they do not justify its fairness.
+% idex escrow contract
+IDEX~\cite{idex-whitepaper} escrows the premium on an Ethereum smart contract for Atomic Swaps. However, this scheme can only support ERC20 tokens. Furthermore, IDEX fully controls the smart contract, so makes no difference with centralised exchanges except for the audibility.
+% interledger packetised payemnt
+Interledger~\cite{interledger-whitepaper} proposed an Atomic Swap protocol based on payment channels.
+In Interledger, Alice (holding coin A) creates a payment channel with Bob (holding coin B) on the blockchain of coin A, and Bob creates a payment channel with Alice on the blockchain of coin B. After that, Alice gradually pays coin A to Bob, while Bob gradually pays coin B to Alice. After both payments are finished, they settle both payment channels.
+However, this scheme suffers from time-consuming interactive operations and poor efficiency.

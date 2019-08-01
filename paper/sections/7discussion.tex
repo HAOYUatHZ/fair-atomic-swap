@@ -1,9 +1,9 @@
 \section{Discussion}
 \label{sec:discussion}
 
-\subsection{Security of the Atomic Swap}
+\subsection{Security of Atomic Swap}
 
-Although already widely adopted, the Atomic Swap has security issues.
+Although already widely adopted, Atomic Swap has security issues.
 
 % rely on blockchain security
 First, the security of Atomic Swaps relies on the security of blockchains:
@@ -14,11 +14,11 @@ Second, the Atomic Swap contracts are written in high-level languages, so the co
 
 % 2 blockchain async
 Third, the timelock is unreliable in the cross-chain scenario.
-Similar to other distributed systems~\cite{coulouris2012distributed}, different blockchains are unsynchronized on the time.
+Similar to other distributed systems~\cite{coulouris2012distributed}, different blockchains are unsynchronised on the time.
 % timestamp of blockchain
 Blockchains timestamp events by either two approaches: using the block height or using the UNIX timestamp.
 % relative time
-The block height can serialize events on a blockchain by time, but cannot serialize events outside the blockchain.
+The block height can serialise events on a blockchain by time, but cannot serialise events outside the blockchain.
 In addition, the new block generation is a random process, so the block height cannot indicate the precise time in reality.
 % abosolute time
 Using the UNIX timestamp doesn't work, either.
@@ -39,12 +39,19 @@ Unfortunately, short timelocks may cause unexpected consequences.
 Confirming transactions for setting up Atomic Swaps takes time, and the time required is highly unpredictable.
 With short timelocks, the transactions for setting up Atomic Swaps may be confirmed after the expiration of timelocks.
 
+The third solution is to use a trusted third party (TTP) to implement the premium mechanism.
+When Alice initiates an Atomic Swap, the TTP forces Alice to deposit the premium.
+Although this TTP does not require Alice and Bob to escrow their assets, the TTP should be trustworthy and can be a single point of failure.
 
-\subsection{Limitations of our solutions}
+\subsection{Limitations of our protocols}
 
 Still, our solutions are not perfect.
+% should hold asset
 The initiators of Atomic Swaps need to hold some participant's asset to initiate an Atomic Swap,
-for either collateralizing successful swaps or paying for the option itself.
+for either collateralising successful swaps or paying for the option itself.
 Unfortunately, the initiators do not always have participant's asset: they may just hope to get some participant's asset with only his asset.
 Before doing an Atomic Swap, the initiator should get some participant's asset by arbitrary means.
 For example, he can buy some participant's asset from cryptocurrency exchanges, or initiate a smaller Atomic Swap with shorter timelocks and no premium.
+% option seller cannot change premium in our protocols
+Also, in an exchange, the option seller can change the premium at any given time until the option buyer signs the option agreement, while in our protocols the option seller cannot update the premium after publishing the option contract.
+In this way, the original Atomic Swap protocol and our protocols are less efficient than centralised solutions in terms of the market liquidity.

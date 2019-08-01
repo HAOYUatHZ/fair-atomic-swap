@@ -2,17 +2,13 @@
 \label{sec:conclusion}
 
 
-In this paper, we investigate the unfairness of the Atomic Swap.
-We point out that an Atomic Swap is essentially a premium-free American Call Option,
-and the Atomic Swap protocol is unfair to the participant.
-
-% evaluate
-We then evaluate the Atomic Swap unfairness, and compare the unfairness between mainstream cryptocurrencies and conventional financial assets.
+In this paper, we investigate the unfairness of Atomic Swap.
+% quantify
+Following ZmnSCPxj's observation~\cite{optionality-origin} that an Atomic Swap is equivalent to a premium-free American Call Option, we evaluate the unfairness of Atomic Swap protocol, and compare the unfairness between mainstream cryptocurrencies and conventional financial assets.
 Our evaluation consists of quantifying the unfairness and estimating the unpaid premium.
 The evaluation results show that the Atomic Swap with cryptocurrencies is much more unfair than with stocks and fiat currencies in the same setting, because the cryptocurrency market is highly volatile.
-
 % propose
-Furthermore, we propose an improvement on the Atomic Swap, which implements the premium mechanism, to make it fair.
+Furthermore, we propose an improvement on Atomic Swap, which implements the premium mechanism, to make it fair.
 It supports both the currency exchange-style Atomic Swap, and the American Call Option-style Atomic Swap.
 We implement our protocol in Solidity as an example of blockchains with smart contracts such as Ethereum.
-We also give instructions on how to implement our protocol by adding a single opcode to blockchains with scripts such as Bitcoin.
+We also give instructions on implementing our protocol using Bitcoin script, which requires adding a single opcode to the Bitcoin script.

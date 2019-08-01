@@ -108,12 +108,13 @@ Therefore, although more volatile than stocks and fiat currencies, exchange rate
 
 The unfairness of Atomic Swap comes from the fact that Alice can abort the contract without punishment.
 In Finance, the premium mechanism guarantees the good behaviours.
-As the Atomic Swap is equivalent to the premium-free American Call Option, the CRR model can be used for estimating the premium of Atomic Swaps.
+As the Atomic Swap is equivalent to the premium-free American Call Option, the Cox-Ross-Rubinstein (CRR) Model~\cite{cox1979option} can be used for estimating the premium of Atomic Swaps.
+
 Therefore, we can evaluate the unfairness of Atomic Swap by estimating the premium for American Call Options with cryptocurrencies.
 
 As the premium is the only variable in an option contract, estimating the premium is also called the ``Option Pricing'' problem.
 In Finance, the Black-Scholes (BS) Model~\cite{black1973pricing} is utilised to price the European Call Options,
-while the Cox-Ross-Rubinstein (CRR) Model~\cite{cox1979option} is utilised to price the American Call Options.
+while the CRR model is utilised to price the American Call Options.
 
 Therefore, in order to evaluate the unfairness of Atomic Swap, we use the CRR Model to estimate how much the premium should be in Atomic Swaps.
 

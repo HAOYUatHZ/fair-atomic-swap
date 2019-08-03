@@ -13,6 +13,7 @@ HTLC was originally introduced to secure routing across multiple payment channel
 In a HTLC-style transaction, the payee can redeem the payment prior to a deadline only by providing the preimage of a specific hash value, otherwise the payment will expire and the money will go back to the payer.
 This is achieved by the hashlock - to lock the payment by a hash value, and the timelock - to give the deadline of redeeming.
 The timelock avoids locking money in a payment forever when the payee cannot provide the preimage.
+The default timelock given in Bitcoin Improvement Proposals' HTLC example~\cite{btcdrak2015checksequenceverify} is 24 hours. So it is fair to believe that such a timelock is common to be chosen when people setting up HTLC, and our evaluation on (un)fairness should be based on such a 24-hour timelock.
 
 \subsection{Option in Finance}
 \label{subsec:background_option}

@@ -66,6 +66,7 @@ ScriptPubKey:
     OP_CHECKSIG
 ```
 
+__TODO: fix url__
 
 The BIP draft can be found here:
 https://github.com/HAOYUatHZ/bips/blob/bip-lookup_output/bip-lookup_output.mediawiki

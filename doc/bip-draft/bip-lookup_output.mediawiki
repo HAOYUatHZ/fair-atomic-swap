@@ -32,11 +32,11 @@ To resolve this problem, the unfair behaviour should receive punishment. To appl
 
 To resolve the new problem, the owner of a refered output needs to be known, and then it can be decided whether the initiator or the participant could take the premium.
 
-The detailed evaluation on the arbitrage and the estimation on the premium are discussed in ''On the optionality and fairness of Atomic Swaps''<ref>https://eprint.iacr.org/2019/896</ref>.
+The detailed evaluation on the arbitrage and the estimation on the premium are discussed in ''On the optionality and fairness of Atomic Swaps''<ref name="iacr_2019_896">https://eprint.iacr.org/2019/896</ref>.
 
 ===A Fair Atomic Swap===
 
-Here is a fair Atomic Swap protocol which implements the premium mechanism.
+A fair Atomic Swap protocol which implements the premium mechanism is brought up by ''On the optionality and fairness of Atomic Swaps''<ref name="iacr_2019_896">https://eprint.iacr.org/2019/896</ref>.
 
 ;1. Initiate
 

@@ -6,7 +6,7 @@ Here is a BIP draft brought up by Runchao(CC'ed) and I to enable OP_LOOKUP_OUTPU
 
 The problem can be simply decribed as that, the initiator can abort the deal, i.e., have optionality, without receiving any penalty. See https://lists.linuxfoundation.org/pipermail/lightning-dev/2018-May/001292.html and https://lists.linuxfoundation.org/pipermail/lightning-dev/2018-December/001752.html for detail.
 
-We have done some research, including fetching cryptocurrency market history in the last year, and analyzing how profitable the arbitrage can be, given the default timelock setting (24/48 hrs) . Our result shows that the profit can be approximately 1% ~ 2.3%, which is non-negligible compared with 0.3% for stock market, and can be attractive considering it's risk-free. We formalize these into a paper: https://eprint.iacr.org/2019/896, and the related codes lie in https://github.com/HAOYUatHZ/RWorldSecCrossChainPayment/ (__TODO: fix repo url__).
+We have done some research, including fetching cryptocurrency market history in the last year, and analyzing how profitable the arbitrage can be, given the default timelock setting (24/48 hrs) . Our result shows that the profit can be approximately 1% ~ 2.3%, which is non-negligible compared with 0.3% for stock market, and can be attractive considering it's risk-free. We formalize these into a paper: https://eprint.iacr.org/2019/896, and the related codes lie in https://github.com/HAOYUatHZ/fair-atomic-swap.
 
 To understand it better, you may also like to refer to: 
 
@@ -65,8 +65,6 @@ ScriptPubKey:
     OP_EQUALVERIFY
     OP_CHECKSIG
 ```
-
-__TODO: fix repo url__
 
 The BIP draft can be found here:
 https://github.com/HAOYUatHZ/bips/blob/bip-lookup_output/bip-lookup_output.mediawiki

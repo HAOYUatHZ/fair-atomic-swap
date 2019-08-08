@@ -27,11 +27,6 @@ OP_LOOKUP_OUTPUT takes the id of an output, and produces the address of the outp
 
 The Atomic Swap protocol enables two parties to exchange cryptocurrencies on different blockchains atomically. However, the usage of Hash Timelocked Contracts (HTLCs) in Atomic Swap introduces optionality: The initior can abort the deal without receiving any penalty. This problem is known as ''Free Option Problem'', as described in:
 
-* https://en.bitcoin.it/wiki/Atomic_swap#Financial_optionality
-* https://blog.bitmex.com/atomic-swaps-and-distributed-exchanges-the-inadvertent-call-option/
-* https://lists.linuxfoundation.org/pipermail/lightning-dev/2018-May/001292.html
-* https://lists.linuxfoundation.org/pipermail/lightning-dev/2018-December/001752.html
-
 To resolve this problem, the unfair behaviour should receive punishment. To apply the punishment, it requires that, besides the asset used to exchange, the initiator must put some asset as collateral, which is in fact premium. The transaction for the premium needs to be locked with the same secret hash but with a flipped payout, i.e. when redeemed with the secret, the premium goes back to the initiator and after timelock, the premium goes to the participant as a compensation for initiator not revealing the secret. However, this introduces a new problem: the participant can get the premium without paying anything, by never participating in.
 
 To resolve the new problem, the owner of a refered output needs to be known, and then it can be decided whether the initiator or the participant could take the premium.
@@ -135,6 +130,13 @@ As long as the initiator doesn't misbehave, i.e.,
 Implementing OP_LOOKUP_OUTPUT is easy in Bitcoin: It queries the ownership of an output from the indexed blockchain database, then returns the address holding this output.
 
 Adding this opcode will not break the "stateless" design of the Bitcoin script. It does not affect the verifications of old transactions, so only requires a soft fork rather than a hard fork.
+
+==Reference==
+
+[1] https://en.bitcoin.it/wiki/Atomic_swap#Financial_optionality
+[2] https://blog.bitmex.com/atomic-swaps-and-distributed-exchanges-the-inadvertent-call-option/
+[3] https://lists.linuxfoundation.org/pipermail/lightning-dev/2018-May/001292.html
+[4] https://lists.linuxfoundation.org/pipermail/lightning-dev/2018-December/001752.html
 
 ==Copyright==
 

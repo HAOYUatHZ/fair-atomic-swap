@@ -131,8 +131,10 @@ Implementing OP_LOOKUP_OUTPUT is easy in Bitcoin: It queries the ownership of an
 
 Adding this opcode will not break the "stateless" design of the Bitcoin script. It does not affect the verifications of old transactions, so only requires a soft fork rather than a hard fork.
 
+==References==
+
+<references/>
+
 ==Copyright==
 
 This document is placed in the public domain.
-
-<references/>

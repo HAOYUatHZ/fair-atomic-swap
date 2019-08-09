@@ -1,11 +1,10 @@
-<!-- TODO: https://www.mediawiki.org/wiki/Help:Formatting -->
-
 <pre>
   BIP: bip-lookup_output
   Layer: Consensus (soft fork)
   Title: OP_LOOKUP_OUTPUT
   Author: Runchao Han <runchao.han@monash.edu>
           Haoyu Lin <chris.haoyul@gmail.com>
+          Jiangshan Yu <jiangshan.yu@monash.edu>
   Comments-Summary: No comments yet.
   Comments-URI:
   Status: Draft

@@ -21,7 +21,18 @@ This BIP describes a new opcode (OP_LOOKUP_OUTPUT) for the Bitcoin scripting sys
 
 ==Summary==
 
-OP_LOOKUP_OUTPUT takes the id of an output, and produces the address of the output’s owner.
+OP_LOOKUP_OUTPUT takes the id of an output, and produces the address of the output’s owner. Similar to BIP-0112<ref>CHECKSEQUENCEVERIFY, https://github.com/bitcoin/bips/blob/master/bip-0112.mediawiki</ref>, when executed, if any of the following conditions are true, the script interpreter will terminate with an error:
+
+* the stack is empty; or
+* the top item on the stack is less than 0; or
+* the top item on the stack has the disable flag (1 << 31) unset; and
+** the transaction version is less than 2; or
+** the transaction input sequence number disable flag (1 << 31) is set; or
+** the relative lock-time type is not the same; or
+** the top stack item is greater than the transaction input sequence (when masked according to the BIP68);
+
+Otherwise, script execution will continue as if a NOP had been executed.
+
 
 ==Motivation==
 

@@ -1,6 +1,6 @@
 # On the optionality and fairness of Atomic Swaps
 
-This is the repo for the paper [On the optionality and fairness of Atomic Swaps](https://eprint.iacr.org/2019/896) (published at [The First ACM Conference on Advances in Financial Technologies (AFT’19)](http://aft.acm.org)) by [Runchao Han](https://github.com/SebastianElvis), [Haoyu Lin](https://github.com/HAOYUatHZ) and [Jiangshan Yu](http://jiangshanyu.com).
+This is the repo for the paper [On the optionality and fairness of Atomic Swaps](https://dl.acm.org/doi/10.1145/3318041.3355460) (published at [The First ACM Conference on Advances in Financial Technologies (AFT’19)](http://aft.acm.org)) by [Runchao Han](https://github.com/SebastianElvis), [Haoyu Lin](https://github.com/HAOYUatHZ) and [Jiangshan Yu](http://jiangshanyu.com).
 
 ## Directory
 
